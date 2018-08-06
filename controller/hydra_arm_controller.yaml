@@ -1,0 +1,33 @@
+arm_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+     - placer_shoulder_pan_joint
+     - placer_shoulder_lift_joint
+     - placer_elbow_joint
+     - placer_wrist_1_joint
+     - placer_wrist_2_joint
+     - placer_wrist_3_joint
+     - attacher_shoulder_pan_joint
+     - attacher_shoulder_lift_joint
+     - attacher_elbow_joint
+     - attacher_wrist_1_joint
+     - attacher_wrist_2_joint
+     - attacher_wrist_3_joint
+  constraints:
+      goal_time: 0.6
+      stopped_velocity_tolerance: 0.05
+      placer_shoulder_pan_joint: {trajectory: 0.1, goal: 0.1}
+      placer_shoulder_lift_joint: {trajectory: 0.1, goal: 0.1}
+      placer_elbow_joint: {trajectory: 0.1, goal: 0.1}
+      placer_wrist_1_joint: {trajectory: 0.1, goal: 0.1}
+      placer_wrist_2_joint: {trajectory: 0.1, goal: 0.1}
+      placer_wrist_3_joint: {trajectory: 0.1, goal: 0.1}
+      attacher_shoulder_pan_joint: {trajectory: 0.1, goal: 0.1}
+      attacher_shoulder_lift_joint: {trajectory: 0.1, goal: 0.1}
+      attacher_elbow_joint: {trajectory: 0.1, goal: 0.1}
+      attacher_wrist_1_joint: {trajectory: 0.1, goal: 0.1}
+      attacher_wrist_2_joint: {trajectory: 0.1, goal: 0.1}
+      attacher_wrist_3_joint: {trajectory: 0.1, goal: 0.1}
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10

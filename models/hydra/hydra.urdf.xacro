@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro"
+       name="hydra">
+
+  <xacro:arg name="is_joint_limited" default="true" />
+
+
+  
+  <!-- model descriptions -->
+  <!-- UR10 description for placer robot -->
+  <xacro:include filename="$(find ur_description)/urdf/ur10.urdf.xacro" />
+  
+  <xacro:if value="$(arg is_joint_limited)">
+    <xacro:ur10_robot prefix="placer_" joint_limited="true"
+		      shoulder_pan_lower_limit="${-pi}" shoulder_pan_upper_limit="${pi}"
+		      shoulder_lift_lower_limit="${-pi}" shoulder_lift_upper_limit="${pi}"
+		      elbow_joint_lower_limit="${-pi}" elbow_joint_upper_limit="${pi}"
+		      wrist_1_lower_limit="${-pi}" wrist_1_upper_limit="${pi}"
+		      wrist_2_lower_limit="${-pi}" wrist_2_upper_limit="${pi}"
+		      wrist_3_lower_limit="${-pi}" wrist_3_upper_limit="${pi}" />
+  </xacro:if>
+  
+  <xacro:unless value="$(arg is_joint_limited)">
+    <xacro:ur10_robot prefix="placer_" joint_limited="false" />
+  </xacro:unless>
+  
+  <link name="world" />
+
+  <joint name="placer_world_joint" type="fixed">
+    <parent link="world" />
+    <child link = "placer_base_link" />
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  
+  <!-- UR10 description for attacher robot -->  
+  <xacro:if value="$(arg is_joint_limited)">
+    <xacro:ur10_robot prefix="attacher_" joint_limited="true"
+		      shoulder_pan_lower_limit="${-pi}" shoulder_pan_upper_limit="${pi}"
+		      shoulder_lift_lower_limit="${-pi}" shoulder_lift_upper_limit="${pi}"
+		      elbow_joint_lower_limit="${-pi}" elbow_joint_upper_limit="${pi}"
+		      wrist_1_lower_limit="${-pi}" wrist_1_upper_limit="${pi}"
+		      wrist_2_lower_limit="${-pi}" wrist_2_upper_limit="${pi}"
+		      wrist_3_lower_limit="${-pi}" wrist_3_upper_limit="${pi}" />
+  </xacro:if>
+  
+  <xacro:unless value="$(arg is_joint_limited)">
+    <xacro:ur10_robot prefix="attacher_" joint_limited="false" />
+  </xacro:unless>
+
+  <joint name="attacher_world_joint" type="fixed">
+    <parent link="world" />
+    <child link = "attacher_base_link" />
+    <origin xyz="1.5 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  
+
+  <!-- Gazebo plugin for controlling joints -->
+  <gazebo>
+    <plugin name="ros_control" filename="libgazebo_ros_control.so" />
+  </gazebo>
+      
+</robot>
