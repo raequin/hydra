@@ -1,0 +1,65 @@
+<sdf version='1.6'>
+  <model name='wall_plain'>
+    <link name='wall_plain'>
+      <pose frame=''>0 0 0 0 0 0</pose>
+      
+      <inertial>
+        <pose frame=''>0 0.00594 0.31407 0 0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>0.225152</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.41938</iyy>
+          <iyz>0</iyz>
+          <izz>0.206933</izz>
+        </inertia>
+      </inertial>
+      
+      <collision name='wall_plain_collision'>
+	<!-- Change max_vel and/or min_depth to keep cones from "bouncing" -->
+	<!--surface>
+	  <contact>
+	    <ode>
+	      <kp>1e12</kp>
+	      <kd>1e0</kd>
+	      <max_vel>0</max_vel>
+	      <min_depth>0.001</min_depth>
+	    </ode>
+	  </contact>
+	  <friction>
+	    <ode>
+	      <mu>10.0</mu>
+	      <mu2>10.0</mu2>
+	    </ode>
+	  </friction>
+	</surface-->
+        <pose frame=''>0 0 0.01 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>model://wall_plain/meshes/wall_plain.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      
+      <visual name='wall_plain_visual'>
+        <pose frame=''>0 0 0.01 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>0.001 0.001 0.001</scale>
+            <uri>model://wall_plain/meshes/wall_plain.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+
+      <!--
+      <sensor name='my_contact' type='contact'>
+        <contact>
+          <collision>Cone100_collision</collision>
+        </contact>
+	</sensor>
+	-->
+    </link>
+  </model>
+</sdf>

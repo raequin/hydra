@@ -1,0 +1,7 @@
+<model><name>100 % Cone</name>
+<version>1.0</version>
+<sdf version="1.2">model.sdf</sdf>
+<author><name>Elizabeth Neleski</name><email>eneleski@students.kennesaw.edu</email></author>
+<description>
+  a 100% full cone
+</description></model>
