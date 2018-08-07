@@ -21,11 +21,11 @@
   </xacro:if>
   
   <xacro:unless value="$(arg is_joint_limited)">
-    <xacro:ur10_robot prefix="" joint_limited="false" />
+    <xacro:ur10_robot prefix="placer_" joint_limited="false" />
   </xacro:unless>
-  
-  <link name="world" />
 
+  <!-- Attach placer manipulator to world -->
+  <link name="world" />
   <joint name="placer_world_joint" type="fixed">
     <parent link="world" />
     <child link = "placer_base_link" />
@@ -33,9 +33,7 @@
   </joint>
 
   
-  <!-- UR10 description for attacher robot -->
-  <xacro:include filename="$(find ur_description)/urdf/ur10.urdf.xacro" />
-  
+  <!-- UR10 description for attacher robot -->  
   <xacro:if value="$(arg is_joint_limited)">
     <xacro:ur10_robot prefix="attacher_" joint_limited="true"
 		      shoulder_pan_lower_limit="${-pi}" shoulder_pan_upper_limit="${pi}"
@@ -47,13 +45,13 @@
   </xacro:if>
   
   <xacro:unless value="$(arg is_joint_limited)">
-    <xacro:ur10_robot prefix="" joint_limited="false" />
+    <xacro:ur10_robot prefix="attacher_" joint_limited="false" />
   </xacro:unless>
 
   <joint name="attacher_world_joint" type="fixed">
     <parent link="world" />
     <child link = "attacher_base_link" />
-    <origin xyz="0.0 3.0 0.0" rpy="0.0 0.0 0.0" />
+    <origin xyz="1.5 0.0 0.0" rpy="0.0 0.0 0.0" />
   </joint>
 
   

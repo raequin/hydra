@@ -31,9 +31,11 @@
   <rosparam file="$(find hydra)/controller/joint_state_controller.yaml" command="load" />
   <rosparam file="$(find hydra)/controller/hydra_placer_arm_controller.yaml" command="load" />
   <rosparam file="$(find hydra)/controller/hydra_attacher_arm_controller.yaml" command="load" />
+  <rosparam file="$(find hydra)/controller/gripper_placer_controller_p.yaml" command="load" />
+  <rosparam file="$(find hydra)/controller/gripper_placer_controller_d.yaml" command="load" />
   <!--rosparam file="$(find ur_gazebo)/controller/arm_controller_ur10.yaml" command="load" /-->
   
   <node name="controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false"
-	output="screen" args="spawn joint_state_controller hydra_placer_arm_controller hydra_attacher_arm_controller"/>
+	output="screen" args="spawn joint_state_controller hydra_placer_arm_controller hydra_attacher_arm_controller gripper_placer_controller_p gripper_placer_controller_d"/>
   
 </launch>

@@ -1,0 +1,4 @@
+gripper_placer_controller_d:
+  type: position_controllers/JointPositionController
+  joint: gripper_joint_d
+  pid: {p: 100000, i: 0.01, d: 10.0}

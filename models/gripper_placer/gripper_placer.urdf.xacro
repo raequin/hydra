@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<robot name="gripper_placer"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+
+  <!-- Switch between EffortJointInterface and PositionJointInterface, still requires change in yaml files -->
+  <xacro:property name="using_position_not_effort" value="true" />
+
+  <!-- Constants for gripper joint controllers -->
+  <xacro:property name="effort_limit" value="5000" />
+  <xacro:property name="gripper_friction" value="100" />
+  <xacro:property name="gripper_min_depth" value="0.001" />  <!-- Default is 0 -->
+  <xacro:property name="gripper_max_vel" value="0.01" />  <!-- Default is 0.01 -->
+
+  <!-- Phantom link for center of gripper -->
+  <link name="gripper_center" >
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- One side of gripper -->
+  <link name="side_p" >
+    <visual>
+      <origin xyz="0 0.04185 0" rpy="0 0 0" />
+      <geometry>
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0.04185 0" rpy="0 0 0" />
+      <geometry>
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.001" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+    </inertial>
+  </link>
+
+  <!-- Second side of gripper -->
+  <link name="side_d" >
+    <visual>
+      <origin xyz="0 -0.04185 0" rpy="0 0 ${pi}" />
+      <geometry>
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.04185 0" rpy="0 0 ${pi}" />
+      <geometry>
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.001" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+    </inertial>
+  </link>
+  
+
+  <!-- Prismatic joint -->
+  <joint name="gripper_joint_p" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_center" />
+    <child link="side_p" />
+    <limit effort="${effort_limit}" lower="-100" upper="100" velocity="0.5"/>
+  </joint>
+  
+  <joint name="gripper_joint_d" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_center" />
+    <child link="side_d" />
+    <limit effort="${effort_limit}" lower="-100" upper="100" velocity="0.5"/>
+  </joint>
+
+  <!-- Prismatic joint -->
+  <!--joint name="gripper_joint_p" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_center" />
+    <child link="side_p" />
+  </joint>
+  
+  <joint name="gripper_joint_d" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_center" />
+    <child link="side_d" />
+    </joint-->
+
+    <!-- Transmission for ROS control -->
+  <xacro:if value="${using_position_not_effort == 'true'}">
+    <transmission name="gripper_joint_transmission_p">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="gripper_joint_p">
+	<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="gripper_joint_motor_p">
+	<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	<mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    
+    <transmission name="gripper_joint_transmission_d">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="gripper_joint_d">
+	<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="gripper_joint_motor_d">
+	<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	<mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:if>
+  
+  <xacro:if value="${using_position_not_effort == 'false'}">
+    <transmission name="gripper_joint_transmission_p">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="gripper_joint_p">
+	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="gripper_joint_motor_p">
+	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	<mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+    
+    <transmission name="gripper_joint_transmission_d">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="gripper_joint_d">
+	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="gripper_joint_motor_d">
+	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	<mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:if>
+
+</robot>

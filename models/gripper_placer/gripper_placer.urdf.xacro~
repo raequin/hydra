@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<robot name="gripper_placer"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Phantom link for center of gripper -->
+  <link name="gripper_center" >
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- One side of gripper -->
+  <link name="side_p" >
+    <visual>
+      <origin xyz="0 0.177 0" rpy="${pi / 2} 0 ${5 * pi / 8}" />
+      <geometry>
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.0394 0.0394 0.0394" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0.177 0" rpy="${pi / 2} 0 ${5 * pi / 8}" />
+      <geometry>
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.0394 0.0394 0.0394" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.001" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+    </inertial>
+  </link>
+
+  <!-- Second side of gripper -->
+  <!-- link name="side_d" >
+    <visual>
+      <origin xyz="0 -0.177 0" rpy="${pi / 2} 0 ${-3 * pi / 8}" />
+      <geometry>
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.0394 0.0394 0.0394" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.177 0" rpy="${pi / 2} 0 ${-3 * pi / 8}" />
+      <geometry>
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.0394 0.0394 0.0394" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.001" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+    </inertial>
+  </link-->
+  
+
+  <!-- Prismatic joint -->
+  <joint name="gripper_joint_p" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_center" />
+    <child link="side_p" />
+  </joint>
+  
+  <!--joint name="gripper_joint_d" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="gripper_center" />
+    <child link="side_d" />
+  </joint-->
+
+</robot>

@@ -23,13 +23,23 @@
   <xacro:unless value="$(arg is_joint_limited)">
     <xacro:ur10_robot prefix="placer_" joint_limited="false" />
   </xacro:unless>
-  
-  <link name="world" />
 
+  <!-- Gripper -->
+  <xacro:include filename="$(find hydra)/models/gripper_placer/gripper_placer.urdf.xacro"/>
+
+  <!-- Attach placer manipulator to world -->
+  <link name="world" />
   <joint name="placer_world_joint" type="fixed">
     <parent link="world" />
     <child link = "placer_base_link" />
     <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+  
+  <!-- joint to attach mount for tool to UR10 -->
+  <joint name="mount_gripper_to_placer" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="placer_tool0" />
+    <child link="gripper_center" />    
   </joint>
 
   
