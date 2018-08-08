@@ -12,6 +12,9 @@
   <xacro:property name="gripper_min_depth" value="0.001" />  <!-- Default is 0 -->
   <xacro:property name="gripper_max_vel" value="0.01" />  <!-- Default is 0.01 -->
 
+  <!-- Variable for the scale used when importing STL -->
+  <xacro:property name="stl_scale" value="0.0254" />  <!-- 0.0393701 -->
+
   <!-- Phantom link for center of gripper -->
   <link name="gripper_center" >
     <inertial>
@@ -23,15 +26,15 @@
   <!-- One side of gripper -->
   <link name="side_p" >
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0.11485" rpy="0 0 0" />
       <geometry>
-	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
+      <origin xyz="0 0 0.11485" rpy="0 0 0" />
       <geometry>
-	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
       </geometry>
     </collision>
     <inertial>
@@ -43,15 +46,15 @@
   <!-- Second side of gripper -->
   <link name="side_d" >
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 ${pi}" /><!--origin xyz="0 0.04185 0" rpy="0 0 ${pi}" /-->
+      <origin xyz="0 0 0.11485" rpy="0 0 ${pi}" /><!--origin xyz="0 0.04185 0" rpy="0 0 ${pi}" /-->
       <geometry>
-	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 ${pi}" />
+      <origin xyz="0 0 0.11485" rpy="0 0 ${pi}" />
       <geometry>
-	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
+	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
       </geometry>
     </collision>
     <inertial>
