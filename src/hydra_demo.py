@@ -40,13 +40,13 @@ rospy.wait_for_service("gazebo/spawn_sdf_model")
 print("Got it.")
 model_spawner = rospy.ServiceProxy("gazebo/spawn_sdf_model", SpawnModel)
 model_deleter = rospy.ServiceProxy("gazebo/delete_model", DeleteModel)
-
+'''
 # Spawn a wall
 model_file = open('/home/mqm/.gazebo/models/wall_plain/model.sdf', 'r')
 wall_sdf = model_file.read()
 wall_pose = Pose(Point(0, -0.5, 0.0), Quaternion(0, 0, 0.7071, 0.7071))
 model_spawner("wall_1", wall_sdf, "", wall_pose, "world")
-
+'''
 
 # Move the placer manipulator
 group_placer.set_joint_value_target(joint_home)

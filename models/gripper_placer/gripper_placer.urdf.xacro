@@ -23,13 +23,13 @@
   <!-- One side of gripper -->
   <link name="side_p" >
     <visual>
-      <origin xyz="0 0.04185 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
 	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0 0.04185 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
 	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
       </geometry>
@@ -43,13 +43,13 @@
   <!-- Second side of gripper -->
   <link name="side_d" >
     <visual>
-      <origin xyz="0 -0.04185 0" rpy="0 0 ${pi}" />
+      <origin xyz="0 0 0" rpy="0 0 ${pi}" /><!--origin xyz="0 0.04185 0" rpy="0 0 ${pi}" /-->
       <geometry>
 	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0 -0.04185 0" rpy="0 0 ${pi}" />
+      <origin xyz="0 0 0" rpy="0 0 ${pi}" />
       <geometry>
 	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="0.01 0.01 0.01" />
       </geometry>
@@ -64,6 +64,7 @@
   <!-- Prismatic joint -->
   <joint name="gripper_joint_p" type="prismatic">
     <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
     <parent link="gripper_center" />
     <child link="side_p" />
     <limit effort="${effort_limit}" lower="-100" upper="100" velocity="0.5"/>
@@ -71,6 +72,7 @@
   
   <joint name="gripper_joint_d" type="prismatic">
     <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
     <parent link="gripper_center" />
     <child link="side_d" />
     <limit effort="${effort_limit}" lower="-100" upper="100" velocity="0.5"/>
