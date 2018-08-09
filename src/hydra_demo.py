@@ -63,7 +63,7 @@ model_spawner = rospy.ServiceProxy("gazebo/spawn_sdf_model", SpawnModel)
 model_deleter = rospy.ServiceProxy("gazebo/delete_model", DeleteModel)
 
 # Spawn walls
-model_file = open('/home/mqm/.gazebo/models/wall_plain_with_blocking/model.sdf', 'r')
+model_file = open('/home/matt/.gazebo/models/wall_plain_with_blocking/model.sdf', 'r')
 model_sdf = model_file.read()
 wall_1_x = 0.0
 wall_1_y = -0.5
@@ -71,10 +71,10 @@ wall_1_z = 0.0
 model_pose = Pose(Point(wall_1_x, wall_1_y, wall_1_z), Quaternion(0, 0, sqrt_one_half, sqrt_one_half))
 model_spawner("wall_1", model_sdf, "", model_pose, "world")
 
-model_file = open('/home/mqm/.gazebo/models/wall_plain/model.sdf', 'r')
+model_file = open('/home/matt/.gazebo/models/wall_plain/model.sdf', 'r')
 model_sdf = model_file.read()
 model_pose = Pose(Point(wall_1_x-0.25, wall_1_y, wall_1_z), Quaternion(0, 0, sqrt_one_half, sqrt_one_half))
-model_spawner("wall_2", model_sdf, "", model_pose, "world")
+#model_spawner("wall_2", model_sdf, "", model_pose, "world")
 '''
 # Spawn bars
 model_file = open('/home/mqm/.gazebo/models/meter_bar_ISO_metric/model.sdf', 'r')
@@ -108,6 +108,7 @@ print "========== Current attacher pose: ", pose_c
 # Open the gripper
 pub_gripper_p.publish(gripper_open_dist / 2)
 pub_gripper_d.publish(-gripper_open_dist / 2)
+rospy.sleep(3)
 
 # Approach pose for grasping first wall
 grasp_z = wall_1_z + wall_height - robot_base_height + gripper_offset - hole_offset
