@@ -143,4 +143,12 @@
     </transmission>
   </xacro:if>
 
+  <!-- Gazebo tag for hopefully changing physics engine properties to work -->
+  <gazebo>
+    <maxVel>0</maxVel>
+    <minDepth>0.0001</minDepth>
+    <mu1>1000</mu1>
+    <mu2>1000</mu2>
+  </gazebo>
+
 </robot>

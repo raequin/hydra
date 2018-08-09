@@ -108,7 +108,7 @@ print "========== Current attacher pose: ", pose_c
 # Open the gripper
 pub_gripper_p.publish(gripper_open_dist / 2)
 pub_gripper_d.publish(-gripper_open_dist / 2)
-rospy.sleep(3)
+rospy.sleep(2)
 
 # Approach pose for grasping first wall
 grasp_z = wall_1_z + wall_height - robot_base_height + gripper_offset - hole_offset
@@ -130,7 +130,7 @@ group_placer.execute(plan)
 # Close the gripper
 pub_gripper_p.publish(gripper_open_dist / 2 - 0.02)
 pub_gripper_d.publish(-gripper_open_dist / 2 + 0.02)
-rospy.sleep(3)
+rospy.sleep(2)
 
 # Lift the wall
 waypoints = []
