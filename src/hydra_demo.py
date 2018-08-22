@@ -114,12 +114,27 @@ rospy.sleep(3)
 grasp_z = wall_1_z + wall_height - robot_base_height + gripper_offset - hole_offset
 grasp_approach_z = grasp_z + 0.05
 grasp_approach_pose = Pose(Point(wall_1_x, wall_1_y, grasp_approach_z), Quaternion(sqrt_one_half, sqrt_one_half, 0, 0))
-waypoints = []
-#waypoints.append(copy.deepcopy(pose_c))
-waypoints.append(copy.deepcopy(grasp_approach_pose))
-(plan, fraction) = group_placer.compute_cartesian_path(waypoints, 0.001, 0.0)
-group_placer.execute(plan)
 
+if behavior_selection == 'using_forks':
+    # Approach pose for grasping first wall
+    fork_approach_pose_1 = Pose(Point(wall_1_x-0.1, wall_1_y, grasp_approach_z), Quaternion(sqrt_one_half, sqrt_one_half, 0, 0))
+    waypoints = []
+    waypoints.append(copy.deepcopy(fork_approach_pose_1))
+    (plan, fraction) = group_placer.compute_cartesian_path(waypoints, 0.001, 0.0)
+    group_placer.execute(plan)
+    fork_approach_pose_2 = Pose(Point(wall_1_x-0.1, wall_1_y, grasp_z), Quaternion(sqrt_one_half, sqrt_one_half, 0, 0))
+    waypoints = []
+    waypoints.append(copy.deepcopy(fork_approach_pose_2))
+    (plan, fraction) = group_placer.compute_cartesian_path(waypoints, 0.001, 0.0)
+    group_placer.execute(plan)
+    
+else:
+    waypoints = []
+    #waypoints.append(copy.deepcopy(pose_c))
+    waypoints.append(copy.deepcopy(grasp_approach_pose))
+    (plan, fraction) = group_placer.compute_cartesian_path(waypoints, 0.001, 0.0)
+    group_placer.execute(plan)
+    
 # Grasp pose for first wall
 grasp_pose = Pose(Point(wall_1_x, wall_1_y, grasp_z), Quaternion(sqrt_one_half, sqrt_one_half, 0, 0))
 waypoints = []
@@ -127,10 +142,11 @@ waypoints.append(copy.deepcopy(grasp_pose))
 (plan, fraction) = group_placer.compute_cartesian_path(waypoints, 0.001, 0.0)
 group_placer.execute(plan)
 
-# Close the gripper
-pub_gripper_p.publish(gripper_open_dist / 2 - 0.02)
-pub_gripper_d.publish(-gripper_open_dist / 2 + 0.02)
-rospy.sleep(1)
+if behavior_selection != 'using_forks':
+    # Close the gripper
+    pub_gripper_p.publish(gripper_open_dist / 2 - 0.02)
+    pub_gripper_d.publish(-gripper_open_dist / 2 + 0.02)
+    rospy.sleep(1)
 
 # Lift the wall
 waypoints = []

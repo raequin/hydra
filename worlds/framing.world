@@ -16,7 +16,6 @@
     <!-- Default max_step_size is 0.001 -->
     <!-- Product of r_t_u_r and m_s_s gives target realTimeFactor, I think.  Default is 1000. -->
     <!-- Default iters is 50 -->
-
     <physics type="ode">
       <max_step_size>0.0005</max_step_size>  
       <real_time_update_rate>2000</real_time_update_rate>  

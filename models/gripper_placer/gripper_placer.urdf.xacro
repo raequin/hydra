@@ -2,6 +2,18 @@
 <robot name="gripper_placer"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
+  <xacro:arg name="with_gripper_instead_of_forks" default="false" />
+  <xacro:if value="$(arg with_gripper_instead_of_forks)">
+    <xacro:property name="tool_offset_z" value="0.11485" />
+    <xacro:property name="tool_rotation_z" value="0" />
+    <xacro:property name="tool_stl_path" value="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" />
+  </xacro:if>  
+  <xacro:unless value="$(arg with_gripper_instead_of_forks)">
+    <xacro:property name="tool_offset_z" value="0" />
+    <xacro:property name="tool_rotation_z" value="${pi/2}" />
+    <xacro:property name="tool_stl_path" value="package://hydra/models/gripper_placer/meshes/forks.stl" />
+  </xacro:unless>
+    
 
   <!-- Switch between EffortJointInterface and PositionJointInterface, still requires change in yaml files -->
   <xacro:property name="using_position_not_effort" value="true" />
@@ -26,129 +38,157 @@
   <!-- One side of gripper -->
   <link name="side_p" >
     <visual>
-      <origin xyz="0 0 0.11485" rpy="0 0 0" />
+      <origin xyz="0 0 ${tool_offset_z}" rpy="0 0 ${tool_rotation_z}" />
       <geometry>
-	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+	<mesh filename="${tool_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
       </geometry>
     </visual>
     <collision>
-      <origin xyz="0 0 0.11485" rpy="0 0 0" />
+      <origin xyz="0 0 ${tool_offset_z}" rpy="0 0 ${tool_rotation_z}" />
       <geometry>
-	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+	<mesh filename="${tool_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.001" />
+      <mass value="0.01" />
       <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
     </inertial>
   </link>
 
   <!-- Second side of gripper -->
-  <link name="side_d" >
-    <visual>
-      <origin xyz="0 0 0.11485" rpy="0 0 ${pi}" /><!--origin xyz="0 0.04185 0" rpy="0 0 ${pi}" /-->
-      <geometry>
-	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
-      </geometry>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0.11485" rpy="0 0 ${pi}" />
-      <geometry>
-	<mesh filename="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
-      </geometry>
-    </collision>
-    <inertial>
-      <mass value="0.001" />
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
-    </inertial>
-  </link>
+  <xacro:if value="$(arg with_gripper_instead_of_forks)">  
+    <link name="side_d" >
+      <visual>
+	<origin xyz="0 0 ${tool_offset_z}" rpy="0 0 ${pi}" />
+	<geometry>
+	  <mesh filename="${tool_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+	</geometry>
+      </visual>
+      <collision>
+	<origin xyz="0 0 ${tool_offset_z}" rpy="0 0 ${pi}" />
+	<geometry>
+	  <mesh filename="${tool_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+	</geometry>
+      </collision>
+      <inertial>
+	<mass value="0.01" />
+	<inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+      </inertial>
+    </link>
   
 
-  <!-- Prismatic joint -->
-  <joint name="gripper_joint_p" type="prismatic">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <axis xyz="0 1 0" />
-    <parent link="gripper_center" />
-    <child link="side_p" />
-    <limit effort="${effort_limit}" lower="-100" upper="100" velocity="0.5"/>
-  </joint>
-  
-  <joint name="gripper_joint_d" type="prismatic">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <axis xyz="0 1 0" />
-    <parent link="gripper_center" />
-    <child link="side_d" />
-    <limit effort="${effort_limit}" lower="-100" upper="100" velocity="0.5"/>
-  </joint>
+    <!-- Prismatic joint -->
+    <joint name="gripper_joint_p" type="prismatic">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <axis xyz="0 1 0" />
+      <parent link="gripper_center" />
+      <child link="side_p" />
+      <limit effort="${effort_limit}" lower="-100" upper="100" velocity="0.5"/>
+    </joint>
+    
+    <joint name="gripper_joint_d" type="prismatic">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <axis xyz="0 1 0" />
+      <parent link="gripper_center" />
+      <child link="side_d" />
+      <limit effort="${effort_limit}" lower="-100" upper="100" velocity="0.5"/>
+    </joint>
 
-  <!-- Prismatic joint -->
-  <!--joint name="gripper_joint_p" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <parent link="gripper_center" />
-    <child link="side_p" />
-  </joint>
-  
-  <joint name="gripper_joint_d" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <parent link="gripper_center" />
-    <child link="side_d" />
-    </joint-->
+    <!-- Prismatic joint -->
+    <!--joint name="gripper_joint_p" type="fixed">
+	<origin xyz="0 0 0" rpy="0 0 0" />
+	<parent link="gripper_center" />
+	<child link="side_p" />
+	</joint>
+	
+	<joint name="gripper_joint_d" type="fixed">
+	<origin xyz="0 0 0" rpy="0 0 0" />
+	<parent link="gripper_center" />
+	<child link="side_d" />
+	</joint-->
 
     <!-- Transmission for ROS control -->
-  <xacro:if value="${using_position_not_effort == 'true'}">
-    <transmission name="gripper_joint_transmission_p">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="gripper_joint_p">
-	<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="gripper_joint_motor_p">
-	<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-	<mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
+    <xacro:if value="${using_position_not_effort == 'true'}">
+      <transmission name="gripper_joint_transmission_p">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="gripper_joint_p">
+	  <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="gripper_joint_motor_p">
+	  <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	  <mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+      </transmission>
+      
+      <transmission name="gripper_joint_transmission_d">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="gripper_joint_d">
+	  <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="gripper_joint_motor_d">
+	  <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	  <mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+      </transmission>
+    </xacro:if>  <!-- End if for using_position_not_effort -->
     
-    <transmission name="gripper_joint_transmission_d">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="gripper_joint_d">
-	<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="gripper_joint_motor_d">
-	<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-	<mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  </xacro:if>
-  
-  <xacro:if value="${using_position_not_effort == 'false'}">
-    <transmission name="gripper_joint_transmission_p">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="gripper_joint_p">
-	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="gripper_joint_motor_p">
-	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-	<mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
+    <xacro:if value="${using_position_not_effort == 'false'}">
+      <transmission name="gripper_joint_transmission_p">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="gripper_joint_p">
+	  <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="gripper_joint_motor_p">
+	  <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	  <mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+      </transmission>
+      
+      <transmission name="gripper_joint_transmission_d">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="gripper_joint_d">
+	  <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="gripper_joint_motor_d">
+	  <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	  <mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+      </transmission>
+    </xacro:if>  <!-- End branch for !using_position_not_effort -->
+
     
-    <transmission name="gripper_joint_transmission_d">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="gripper_joint_d">
-	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="gripper_joint_motor_d">
-	<hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-	<mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
-  </xacro:if>
+    <gazebo reference="side_d">
+      <kp>1e12</kp>
+      <kd>1.0</kd>
+      <maxVel>0.0</maxVel>
+      <minDepth>0.001</minDepth>
+      <mu1>1000</mu1>
+      <mu2>1000</mu2>
+      <fdir1>0.0 0.0 0.0</fdir1>
+    </gazebo>
+    
+  </xacro:if>  <!-- End branch for with_gripper_instead_of_forks -->
+
 
   <!-- Gazebo tag for hopefully changing physics engine properties to work -->
-  <gazebo>
-    <maxVel>0</maxVel>
-    <minDepth>0.0001</minDepth>
+  <gazebo reference="side_p">
+    <kp>1e12</kp>
+    <kd>1.0</kd>
+    <maxVel>0.0</maxVel>
+    <minDepth>0.001</minDepth>
     <mu1>1000</mu1>
     <mu2>1000</mu2>
+    <fdir1>0.0 0.0 0.0</fdir1>
   </gazebo>
+  
+
+  <xacro:unless value="$(arg with_gripper_instead_of_forks)">  
+    <!-- Fixed joint for forks -->
+    <joint name="gripper_joint_p" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="gripper_center" />
+      <child link="side_p" />
+    </joint>
+  </xacro:unless>
 
 </robot>

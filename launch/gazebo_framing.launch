@@ -38,5 +38,7 @@
   
   <node name="controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false"
 	output="screen" args="spawn joint_state_controller hydra_placer_arm_controller hydra_attacher_arm_controller gripper_placer_controller_p gripper_placer_controller_d"/>
+  <!--node name="controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false"
+	output="screen" args="spawn joint_state_controller hydra_placer_arm_controller hydra_attacher_arm_controller"/-->
   
 </launch>
