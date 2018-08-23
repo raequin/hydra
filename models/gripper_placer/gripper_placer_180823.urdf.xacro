@@ -17,13 +17,7 @@
     
 
   <!-- Switch between EffortJointInterface and PositionJointInterface, still requires change in yaml files -->
-  <xacro:arg name="using_position_not_effort" default="true" />
-  <xacro:if value="$(arg using_position_not_effort)">
-    <xacro:property name="joint_interface" value="PositionJointInterface" />
-  </xacro:if>
-  <xacro:unless value="$(arg using_position_not_effort)">
-    <xacro:property name="joint_interface" value="EffortJointInterface" />
-  </xacro:unless>
+  <xacro:property name="using_position_not_effort" value="false" />
 
   <!-- Constants for gripper joint controllers -->
   <xacro:property name="effort_limit" value="5000" />
@@ -115,27 +109,53 @@
 	</joint-->
 
     <!-- Transmission for ROS control -->
-    <transmission name="gripper_joint_transmission_p">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="gripper_joint_p">
-	<hardwareInterface>hardware_interface/${joint_interface}</hardwareInterface>
-      </joint>
-      <actuator name="gripper_joint_motor_p">
-	<hardwareInterface>hardware_interface/${joint_interface}</hardwareInterface>
-	<mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
+    <xacro:if value="${using_position_not_effort == 'true'}">
+      <transmission name="gripper_joint_transmission_p">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="gripper_joint_p">
+	  <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="gripper_joint_motor_p">
+	  <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	  <mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+      </transmission>
+      
+      <transmission name="gripper_joint_transmission_d">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="gripper_joint_d">
+	  <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="gripper_joint_motor_d">
+	  <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+	  <mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+      </transmission>
+    </xacro:if>  <!-- End if for using_position_not_effort -->
     
-    <transmission name="gripper_joint_transmission_d">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="gripper_joint_d">
-	<hardwareInterface>hardware_interface/${joint_interface}</hardwareInterface>
-      </joint>
-      <actuator name="gripper_joint_motor_d">
-	<hardwareInterface>hardware_interface/${joint_interface}</hardwareInterface>
-	<mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission>
+    <xacro:if value="${using_position_not_effort == 'false'}">
+      <transmission name="gripper_joint_transmission_p">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="gripper_joint_p">
+	  <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="gripper_joint_motor_p">
+	  <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	  <mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+      </transmission>
+      
+      <transmission name="gripper_joint_transmission_d">
+	<type>transmission_interface/SimpleTransmission</type>
+	<joint name="gripper_joint_d">
+	  <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	</joint>
+	<actuator name="gripper_joint_motor_d">
+	  <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+	  <mechanicalReduction>1</mechanicalReduction>
+	</actuator>
+      </transmission>
+    </xacro:if>  <!-- End branch for !using_position_not_effort -->
 
     
     <gazebo reference="side_d">

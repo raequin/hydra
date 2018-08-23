@@ -14,7 +14,7 @@ wall_height = 0.6096
 robot_base_height = 0.1
 gripper_offset = 0.16385  # Distance from tool flange to gripping screws
 hole_offset = 0.00953  # Distance from wall top to hole center
-gripper_open_dist = 0.0837  # Distance between gripper pads when Robotiq fully open
+gripper_open_dist = 0.1  #0.0837  # Distance between gripper pads when Robotiq fully open
 
 behavior_selection = sys.argv[1]
 
