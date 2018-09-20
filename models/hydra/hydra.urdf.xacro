@@ -3,6 +3,9 @@
        name="hydra">
 
   <xacro:arg name="is_joint_limited" default="true" />
+  <xacro:arg name="is_using_gripper" default="true" />
+  <xacro:arg name="is_using_nailer" default="true" />
+  <xacro:arg name="is_using_camera" default="true" />
 
 
   
@@ -24,24 +27,25 @@
     <xacro:ur10_robot prefix="placer_" joint_limited="false" />
   </xacro:unless>
 
-  <!-- Gripper -->
-  <xacro:include filename="$(find hydra)/models/gripper_placer/gripper_placer.urdf.xacro"/>
-
-  <!-- Attach placer manipulator to world -->
+  <!-- Fix placer manipulator to world -->
   <link name="world" />
   <joint name="placer_world_joint" type="fixed">
     <parent link="world" />
     <child link = "placer_base_link" />
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />  <!-- This yaw value is just temporary for lab.  Revert to 0.0 afterward. -->
   </joint>
   
-  <!-- joint to attach mount for tool to UR10 -->
-  <joint name="mount_gripper_to_placer" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0" />
-    <parent link="placer_tool0" />
-    <child link="gripper_center" />    
-  </joint>
-
+  <xacro:if value="$(arg is_using_gripper)">
+    <!-- Gripper -->
+    <xacro:include filename="$(find hydra)/models/gripper_placer/gripper_placer.urdf.xacro"/>
+    
+    <!-- joint to attach mount for tool to UR10 -->
+    <joint name="mount_gripper_to_placer" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="placer_tool0" />
+      <child link="gripper_center" />    
+    </joint>
+  </xacro:if>
   
   <!-- UR10 description for attacher robot -->  
   <xacro:if value="$(arg is_joint_limited)">
@@ -61,8 +65,26 @@
   <joint name="attacher_world_joint" type="fixed">
     <parent link="world" />
     <child link = "attacher_base_link" />
-    <origin xyz="1.5 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <origin xyz="1.5 0.0 0.0" rpy="0.0 0.0 0.0" />  <!-- This yaw value is just temporary for lab.  Revert to 0.0 afterward. -->
   </joint>
+  
+  <xacro:if value="$(arg is_using_nailer)">
+    <!-- EE and nailer -->
+    <xacro:include filename="$(find hydra)/models/ee_and_nailer/ee_and_nailer.urdf.xacro"/>
+    
+    <!-- joint to attach mount for tool to UR10 -->
+    <joint name="mount_nailer_to_placer" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="attacher_tool0" />
+      <child link="ee_center" />    
+    </joint>
+  </xacro:if>
+
+  <xacro:if value="$(arg is_using_camera)">
+    <!-- EE and nailer -->
+    <xacro:include filename="$(find hydra)/models/depth_camera_kinect/kinect.urdf.xacro" />    
+    <xacro:sensor_kinect parent="attacher_tool0"/>
+  </xacro:if>
 
   
 

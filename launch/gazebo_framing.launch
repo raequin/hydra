@@ -15,7 +15,10 @@
   
   <!-- Spawn an arm in Gazebo, taking a description from the parameter server -->
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-	args="-param robot_description -urdf -model placer -x 0.0 -y 0.0 -z 0.1" />
+	args="-param robot_description -urdf -model placer -z 0.1" />
+  <!--
+  args="-param robot_description -urdf -model placer -x 0.0 -y 0.0 -z 0.1 -Y 0.78540"
+  -->
   
   <!-- This section is from ur_gazebo/launch/controller_utils.launch -->
   <!-- Robot state publisher -->
@@ -30,8 +33,8 @@
   
   <!-- Controllers -->
   <rosparam file="$(find hydra)/controller/joint_state_controller.yaml" command="load" />
-  <rosparam file="$(find hydra)/controller/hydra_placer_arm_controller.yaml" command="load" />
-  <rosparam file="$(find hydra)/controller/hydra_attacher_arm_controller.yaml" command="load" />
+  <rosparam file="$(find hydra)/controller/hydra_placer_arm_controller_effort.yaml" command="load" />
+  <rosparam file="$(find hydra)/controller/hydra_attacher_arm_controller_effort.yaml" command="load" />
   <rosparam file="$(find hydra)/controller/gripper_placer_controller_p.yaml" command="load" />
   <rosparam file="$(find hydra)/controller/gripper_placer_controller_d.yaml" command="load" />
   <!--rosparam file="$(find ur_gazebo)/controller/arm_controller_ur10.yaml" command="load" /-->

@@ -2,12 +2,11 @@
 <robot name="gripper_placer"
        xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:arg name="with_gripper_instead_of_forks" default="true" />
-  <xacro:arg name="stl_collision" default="false" />
+  <xacro:arg name="with_gripper_instead_of_forks" default="false" />
   <xacro:if value="$(arg with_gripper_instead_of_forks)">
     <xacro:property name="tool_offset_z" value="0.11485" />
     <xacro:property name="tool_rotation_z" value="0" />
-    <xacro:property name="tool_stl_path" value="package://hydra/models/gripper_placer/meshes/gripper_pad_v2_part.stl" />
+    <xacro:property name="tool_stl_path" value="package://hydra/models/gripper_placer/meshes/gripper_pad_v2.stl" />
     <!--xacro:property name="tool_stl_path" value="package://hydra/models/gripper_placer/meshes/gripper_pad_slot_version.stl" /-->
   </xacro:if>  
   <xacro:unless value="$(arg with_gripper_instead_of_forks)">
@@ -19,7 +18,7 @@
     
 
   <!-- Switch between EffortJointInterface and PositionJointInterface, still requires change in yaml files -->
-  <xacro:arg name="using_position_not_effort" default="false" />
+  <xacro:arg name="using_position_not_effort" default="true" />
   <xacro:if value="$(arg using_position_not_effort)">
     <xacro:property name="joint_interface" value="PositionJointInterface" />
   </xacro:if>
@@ -28,7 +27,7 @@
   </xacro:unless>
 
   <!-- Constants for gripper joint controllers -->
-  <xacro:property name="effort_limit" value="100000" />
+  <xacro:property name="effort_limit" value="5000" />
   <xacro:property name="gripper_max_vel" value="0.0" />  <!-- Default is 0.01 -->
   <xacro:property name="gripper_min_depth" value="0.0001" />  <!-- Default is 0 -->
   <xacro:property name="gripper_kp" value="1e11" />  <!-- Default is 1e12 -->
@@ -39,28 +38,6 @@
 
   <!-- Variable for the scale used when importing STL -->
   <xacro:property name="stl_scale" value="0.0254" />  <!-- 0.0393701 -->
-
-  <xacro:macro name="inertial_values">
-    <inertial>
-      <mass value="0.1" />
-      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
-    </inertial>
-  </xacro:macro>
-
-  <xacro:macro name="origin_and_geometry">
-    <xacro:if value="$(arg stl_collision)">
-      <origin xyz="0 0 ${tool_offset_z}" rpy="0 0 ${pi}" />
-      <geometry>
-	<mesh filename="${tool_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
-      </geometry>
-    </xacro:if>
-    <xacro:unless value="$(arg stl_collision)">	  
-      <origin xyz="0 0 .15" rpy="0 0 ${pi}" />
-      <geometry>
-	<box size=".05 .01 .07" />
-      </geometry>
-    </xacro:unless>
-  </xacro:macro>
 
   <!-- Phantom link for center of gripper -->
   <link name="gripper_center" >
@@ -73,30 +50,48 @@
   <!-- One side of gripper -->
   <link name="side_p" >
     <visual>
-      <xacro:origin_and_geometry />
+      <origin xyz="0 0 ${tool_offset_z}" rpy="0 0 ${tool_rotation_z}" />
+      <geometry>
+	<mesh filename="${tool_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+      </geometry>
     </visual>
     <collision>
-      <xacro:origin_and_geometry />
+      <origin xyz="0 0 ${tool_offset_z}" rpy="0 0 ${tool_rotation_z}" />
+      <geometry>
+	<mesh filename="${tool_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+      </geometry>
     </collision>
-    <xacro:inertial_values />
+    <inertial>
+      <mass value="0.1" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+    </inertial>
   </link>
 
   <!-- Second side of gripper -->
   <xacro:if value="$(arg with_gripper_instead_of_forks)">  
     <link name="side_d" >
-    <visual>
-      <xacro:origin_and_geometry />
-    </visual>
-    <collision>
-      <xacro:origin_and_geometry />
-    </collision>
-    <xacro:inertial_values />
+      <visual>
+	<origin xyz="0 0 ${tool_offset_z}" rpy="0 0 ${pi}" />
+	<geometry>
+	  <mesh filename="${tool_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+	</geometry>
+      </visual>
+      <collision>
+	<origin xyz="0 0 ${tool_offset_z}" rpy="0 0 ${pi}" />
+	<geometry>
+	  <mesh filename="${tool_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+	</geometry>
+      </collision>
+      <inertial>
+	<mass value="0.1" />
+	<inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+      </inertial>
     </link>
   
 
     <!-- Prismatic joint -->
     <joint name="gripper_joint_p" type="prismatic">
-      <origin xyz="0 0.038 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <axis xyz="0 1 0" />
       <parent link="gripper_center" />
       <child link="side_p" />
@@ -104,7 +99,7 @@
     </joint>
     
     <joint name="gripper_joint_d" type="prismatic">
-      <origin xyz="0 -0.038 0" rpy="0 0 0" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <axis xyz="0 1 0" />
       <parent link="gripper_center" />
       <child link="side_d" />

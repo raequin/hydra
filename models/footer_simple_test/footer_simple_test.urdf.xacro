@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot name="footer_simple_test"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <!-- Link -->
+  <link name="footer" >
+    <visual>
+      <geometry>
+	<box size=".6096 .0889 .01905" />
+      </geometry>
+    </visual>
+    
+    <collision>
+      <geometry>
+	<box size=".6096 .0889 .01905" />
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value=".001" />
+      <inertia ixx=".010" ixy="0.0" ixz="0.0" iyy=".010" iyz="0.0" izz=".010" />
+    </inertial>
+  </link>
+  
+  <!-- Adjust friction on block -->
+  <gazebo reference="footer_simple_test">
+    <!--maxVel>0</maxVel-->
+    <mu1>1</mu1>
+    <mu2>1</mu2>
+    <minDepth>0</minDepth>
+  </gazebo>
+  
+  <gazebo>
+    <static>true</static>
+  </gazebo>
+
+</robot>

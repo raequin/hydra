@@ -1,5 +1,13 @@
 <sdf version='1.5'>
   <world name='default'>
+    <!-- Set the initial view pose -->
+    <gui>
+      <camera name="user_camera">
+	<pose>7.10 -2.97 2.14 0 0.254 2.30</pose>
+      </camera>
+    </gui>
+
+    
     <!-- A global light source -->
     <include>
       <uri>model://sun</uri>

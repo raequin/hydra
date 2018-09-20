@@ -1,4 +1,4 @@
 gripper_placer_controller_d:
-  type: position_controllers/JointPositionController  # For PositionJointInterface use position_controllers, for EffortJointInterface use effort_controllers
+  type: effort_controllers/JointPositionController  # For PositionJointInterface use position_controllers, for EffortJointInterface use effort_controllers
   joint: gripper_joint_d
-  pid: {p: 100000, i: 0.01, d: 10.0}
+  pid: {p: 1000, i: 0.01, d: 2.0}

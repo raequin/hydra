@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot name="wall_simple_test"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <!-- Link -->
+  <link name="wall" >
+    <visual>
+      <geometry>
+	<box size=".0889 .6096 .6096" />
+      </geometry>
+    </visual>
+    
+    <collision>
+      <geometry>
+	<box size=".0889 .6096 .6096" />
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="1" />
+      <inertia ixx=".10" ixy="0.0" ixz="0.0" iyy=".10" iyz="0.0" izz=".10" />
+    </inertial>
+  </link>
+  
+  <!-- Adjust friction on block -->
+  <gazebo reference="wall">
+    <!--maxVel>0</maxVel-->
+    <mu1>1</mu1>
+    <mu2>1</mu2>
+    <minDepth>0</minDepth>
+  </gazebo>
+  
+  <gazebo>
+    <static>false</static>
+  </gazebo>
+
+</robot>

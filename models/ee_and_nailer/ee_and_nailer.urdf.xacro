@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<robot name="ee_and_nailer"
+       xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Variable for the scale used when importing STL -->
+  <xacro:property name="stl_scale" value="0.0254" />
+  <xacro:property name="ee_base_stl_path" value="package://hydra/models/ee_and_nailer/meshes/gripper_nailer_base.stl" />
+  <xacro:property name="ee_cover_stl_path" value="package://hydra/models/ee_and_nailer/meshes/gripper_nailer_cover.stl" />
+  <xacro:property name="nailer_stl_path" value="package://hydra/models/ee_and_nailer/meshes/nailer.stl" />
+
+  <!-- Phantom link for center of gripper -->
+  <link name="ee_center" >
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- EE to hold nailer -->
+  <link name="ee_base" >
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+	<mesh filename="${ee_base_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+	<mesh filename="${ee_base_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+    </inertial>
+  </link>
+  
+  <link name="ee_cover" >
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+	<mesh filename="${ee_cover_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+	<mesh filename="${ee_cover_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+    </inertial>
+  </link>
+  
+  <link name="nailer" >
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+	<mesh filename="${nailer_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+	<mesh filename="${nailer_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1" />
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />
+    </inertial>
+  </link>
+
+
+  <!-- Fixed joints -->  
+  <joint name="ee_base_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="ee_center" />
+    <child link="ee_base" />
+  </joint>
+  
+  <joint name="ee_cover_joint" type="fixed">
+    <origin xyz="-0.022 0 0.053" rpy="0 0 ${pi/2}" />
+    <parent link="ee_center" />
+    <child link="ee_cover" />
+  </joint>
+  
+  <joint name="nailer_joint" type="fixed">
+    <origin xyz="0.0 -0.09 0.085" rpy="0 ${-pi/2} ${pi}" />
+    <parent link="ee_center" />
+    <child link="nailer" />
+  </joint>
+
+</robot>
