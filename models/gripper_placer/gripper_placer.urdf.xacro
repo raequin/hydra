@@ -57,7 +57,7 @@
     <xacro:unless value="$(arg stl_collision)">	  
       <origin xyz="0 0 .15" rpy="0 0 ${pi}" />
       <geometry>
-	<box size=".05 .01 .07" />
+	<box size=".10 .01 .07" />
       </geometry>
     </xacro:unless>
   </xacro:macro>
@@ -92,6 +92,29 @@
     </collision>
     <xacro:inertial_values />
     </link>
+
+    <xacro:unless value="$(arg stl_collision)">
+      <link name="fake_block" >
+	<!--
+	<visual>
+	  <geometry>
+	    <box size=".14 .01 .07" />
+	  </geometry>
+	  </visual>
+	  -->
+	<collision>
+	  <geometry>
+	    <box size=".14 .01 .07" />
+	  </geometry>
+	</collision>
+	<xacro:inertial_values />
+      </link>
+      <joint name="fake_block_joint" type="fixed">
+	<origin xyz="0 0.005 .452" rpy="0 0 0" />
+	<parent link="side_d" />
+	<child link="fake_block" />
+      </joint>      
+    </xacro:unless>
   
 
     <!-- Prismatic joint -->

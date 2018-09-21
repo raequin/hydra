@@ -62,12 +62,14 @@
 	<mesh filename="${nailer_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
       </geometry>
     </visual>
+    <!--
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
 	<mesh filename="${nailer_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
       </geometry>
     </collision>
+    -->
     <inertial>
       <mass value="0.1" />
       <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02" />

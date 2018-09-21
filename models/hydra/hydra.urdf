@@ -214,7 +214,7 @@
   <transmission name="placer_shoulder_pan_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="placer_shoulder_pan_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="placer_shoulder_pan_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -223,7 +223,7 @@
   <transmission name="placer_shoulder_lift_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="placer_shoulder_lift_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="placer_shoulder_lift_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -232,7 +232,7 @@
   <transmission name="placer_elbow_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="placer_elbow_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="placer_elbow_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -241,7 +241,7 @@
   <transmission name="placer_wrist_1_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="placer_wrist_1_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="placer_wrist_1_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -250,7 +250,7 @@
   <transmission name="placer_wrist_2_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="placer_wrist_2_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="placer_wrist_2_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -259,7 +259,7 @@
   <transmission name="placer_wrist_3_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="placer_wrist_3_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="placer_wrist_3_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -291,6 +291,129 @@
     <child link="placer_base_link"/>
     <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.0"/>
     <!-- This yaw value is just temporary for lab.  Revert to 0.0 afterward. -->
+  </joint>
+  <!--xacro:property name="tool_stl_path" value="package://hydra/models/gripper_placer/meshes/gripper_pad_slot_version.stl" /-->
+  <!-- Default is 0 0 0 -->
+  <!-- 0.0393701 -->
+  <!-- Phantom link for center of gripper -->
+  <link name="gripper_center">
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <!-- One side of gripper -->
+  <link name="side_p">
+    <visual>
+      <origin rpy="0 0 3.14159265359" xyz="0 0 .15"/>
+      <geometry>
+        <box size=".05 .01 .07"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 3.14159265359" xyz="0 0 .15"/>
+      <geometry>
+        <box size=".05 .01 .07"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02"/>
+    </inertial>
+  </link>
+  <link name="side_d">
+    <visual>
+      <origin rpy="0 0 3.14159265359" xyz="0 0 .15"/>
+      <geometry>
+        <box size=".05 .01 .07"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 3.14159265359" xyz="0 0 .15"/>
+      <geometry>
+        <box size=".05 .01 .07"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02"/>
+    </inertial>
+  </link>
+  <!-- Prismatic joint -->
+  <joint name="gripper_joint_p" type="prismatic">
+    <origin rpy="0 0 0" xyz="0 0.038 0"/>
+    <axis xyz="0 1 0"/>
+    <parent link="gripper_center"/>
+    <child link="side_p"/>
+    <limit effort="100000" lower="-100" upper="100" velocity="0.5"/>
+  </joint>
+  <joint name="gripper_joint_d" type="prismatic">
+    <origin rpy="0 0 0" xyz="0 -0.038 0"/>
+    <axis xyz="0 1 0"/>
+    <parent link="gripper_center"/>
+    <child link="side_d"/>
+    <limit effort="100000" lower="-100" upper="100" velocity="0.5"/>
+  </joint>
+  <!-- Prismatic joint -->
+  <!--joint name="gripper_joint_p" type="fixed">
+	<origin xyz="0 0 0" rpy="0 0 0" />
+	<parent link="gripper_center" />
+	<child link="side_p" />
+	</joint>
+	
+	<joint name="gripper_joint_d" type="fixed">
+	<origin xyz="0 0 0" rpy="0 0 0" />
+	<parent link="gripper_center" />
+	<child link="side_d" />
+	</joint-->
+  <!-- Transmission for ROS control -->
+  <transmission name="gripper_joint_transmission_p">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="gripper_joint_p">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="gripper_joint_motor_p">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <transmission name="gripper_joint_transmission_d">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="gripper_joint_d">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="gripper_joint_motor_d">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  <gazebo reference="side_d">
+    <kp>1e+11</kp>
+    <kd>100000.0</kd>
+    <maxVel>0.0</maxVel>
+    <!-- Default is 0.01 -->
+    <minDepth>0.0001</minDepth>
+    <mu1>1</mu1>
+    <mu2>1</mu2>
+    <fdir1>0 0 0</fdir1>
+  </gazebo>
+  <!-- End branch for with_gripper_instead_of_forks -->
+  <!-- Gazebo tag for hopefully changing physics engine properties to work -->
+  <gazebo reference="side_p">
+    <kp>1e+11</kp>
+    <kd>100000.0</kd>
+    <maxVel>0.0</maxVel>
+    <!-- Default is 0.01 -->
+    <minDepth>0.0001</minDepth>
+    <mu1>1</mu1>
+    <mu2>1</mu2>
+    <fdir1>0 0 0</fdir1>
+  </gazebo>
+  <!-- joint to attach mount for tool to UR10 -->
+  <joint name="mount_gripper_to_placer" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="placer_tool0"/>
+    <child link="gripper_center"/>
   </joint>
   <link name="attacher_base_link">
     <visual>
@@ -497,7 +620,7 @@
   <transmission name="attacher_shoulder_pan_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="attacher_shoulder_pan_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="attacher_shoulder_pan_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -506,7 +629,7 @@
   <transmission name="attacher_shoulder_lift_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="attacher_shoulder_lift_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="attacher_shoulder_lift_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -515,7 +638,7 @@
   <transmission name="attacher_elbow_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="attacher_elbow_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="attacher_elbow_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -524,7 +647,7 @@
   <transmission name="attacher_wrist_1_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="attacher_wrist_1_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="attacher_wrist_1_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -533,7 +656,7 @@
   <transmission name="attacher_wrist_2_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="attacher_wrist_2_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="attacher_wrist_2_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -542,7 +665,7 @@
   <transmission name="attacher_wrist_3_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="attacher_wrist_3_joint">
-      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="attacher_wrist_3_motor">
       <mechanicalReduction>1</mechanicalReduction>
@@ -570,9 +693,210 @@
   <joint name="attacher_world_joint" type="fixed">
     <parent link="world"/>
     <child link="attacher_base_link"/>
-    <origin rpy="0.0 0.0 0.0" xyz="1.5 0.0 0.0"/>
-    <!-- This yaw value is just temporary for lab.  Revert to 0.0 afterward. -->
+    <origin rpy="0.0 0.0 3.14159265359" xyz="1.5 0.0 0.0"/>
   </joint>
+  <!-- Phantom link for center of gripper -->
+  <link name="ee_center">
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <!-- EE to hold nailer -->
+  <link name="ee_base">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hydra/models/ee_and_nailer/meshes/gripper_nailer_base.stl" scale="0.0254 0.0254 0.0254"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hydra/models/ee_and_nailer/meshes/gripper_nailer_base.stl" scale="0.0254 0.0254 0.0254"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02"/>
+    </inertial>
+  </link>
+  <link name="ee_cover">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hydra/models/ee_and_nailer/meshes/gripper_nailer_cover.stl" scale="0.0254 0.0254 0.0254"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hydra/models/ee_and_nailer/meshes/gripper_nailer_cover.stl" scale="0.0254 0.0254 0.0254"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02"/>
+    </inertial>
+  </link>
+  <link name="nailer">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hydra/models/ee_and_nailer/meshes/nailer.stl" scale="0.0254 0.0254 0.0254"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hydra/models/ee_and_nailer/meshes/nailer.stl" scale="0.0254 0.0254 0.0254"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02"/>
+    </inertial>
+  </link>
+  <!-- Fixed joints -->
+  <joint name="ee_base_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="ee_center"/>
+    <child link="ee_base"/>
+  </joint>
+  <joint name="ee_cover_joint" type="fixed">
+    <origin rpy="0 0 1.57079632679" xyz="-0.022 0 0.053"/>
+    <parent link="ee_center"/>
+    <child link="ee_cover"/>
+  </joint>
+  <joint name="nailer_joint" type="fixed">
+    <origin rpy="0 -1.57079632679 3.14159265359" xyz="0.0 -0.09 0.085"/>
+    <parent link="ee_center"/>
+    <child link="nailer"/>
+  </joint>
+  <!-- joint to attach mount for tool to UR10 -->
+  <joint name="mount_nailer_to_placer" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="attacher_tool0"/>
+    <child link="ee_center"/>
+  </joint>
+  <gazebo reference="camera_depth_frame">
+    <sensor name="camera1" type="depth">
+      <always_on>true</always_on>
+      <update_rate>20.0</update_rate>
+      <camera>
+        <horizontal_fov>1.0471975512</horizontal_fov>
+        <image>
+          <format>R8G8B8</format>
+          <width>640</width>
+          <height>480</height>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>8.0</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros_openni_kinect.so" name="camera_depth_frame_kinect_controller">
+        <baseline>0.1</baseline>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>10</updateRate>
+        <cameraName>camera1</cameraName>
+        <imageTopicName>depth/image_raw</imageTopicName>
+        <cameraInfoTopicName>depth/camera_info</cameraInfoTopicName>
+        <depthImageTopicName>depth/image_raw</depthImageTopicName>
+        <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+        <pointCloudTopicName>depth/points</pointCloudTopicName>
+        <frameName>camera_depth_optical_frame</frameName>
+        <pointCloudCutoff>0.3</pointCloudCutoff>
+        <distortion_k1>0.0</distortion_k1>
+        <distortion_k2>0.0</distortion_k2>
+        <distortion_k3>0.0</distortion_k3>
+        <distortion_t1>0.0</distortion_t1>
+        <distortion_t2>0.0</distortion_t2>
+        <!--
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+          <focalLength>0</focalLength>
+          <hackBaseline>0</hackBaseline>
+      -->
+      </plugin>
+    </sensor>
+  </gazebo>
+  <joint name="camera_rgb_joint" type="fixed">
+    <origin rpy="0 -1.5708 0" xyz="-0.12 0 0.08"/>
+    <parent link="attacher_tool0"/>
+    <child link="camera_rgb_frame"/>
+  </joint>
+  <link name="camera_rgb_frame">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="camera_rgb_optical_joint" type="fixed">
+    <origin rpy="-1.57079632679 0 -1.57079632679" xyz="0 0 0"/>
+    <parent link="camera_rgb_frame"/>
+    <child link="camera_rgb_optical_frame"/>
+  </joint>
+  <link name="camera_rgb_optical_frame">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.031 0 -0.016"/>
+    <parent link="camera_rgb_frame"/>
+    <child link="camera_link"/>
+  </joint>
+  <link name="camera_link">
+    <visual>
+      <origin rpy="0 0 1.57079632679" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://hydra/models/depth_camera_kinect/meshes/kinect.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.07271 0.27794 0.073"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <!-- The fixed joints & links below are usually published by static_transformers launched by the OpenNi launch 
+		 files. However, for Gazebo simulation we need them, so we add them here.
+		 (Hence, don't publish them additionally!) -->
+  <joint name="camera_depth_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="camera_rgb_frame"/>
+    <child link="camera_depth_frame"/>
+  </joint>
+  <link name="camera_depth_frame">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+  <joint name="camera_depth_optical_joint" type="fixed">
+    <origin rpy="-1.57079632679 0 -1.57079632679" xyz="0 0 0"/>
+    <parent link="camera_depth_frame"/>
+    <child link="camera_depth_optical_frame"/>
+  </joint>
+  <link name="camera_depth_optical_frame">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
   <!-- Gazebo plugin for controlling joints -->
   <gazebo>
     <plugin filename="libgazebo_ros_control.so" name="ros_control"/>

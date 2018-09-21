@@ -65,7 +65,7 @@
   <joint name="attacher_world_joint" type="fixed">
     <parent link="world" />
     <child link = "attacher_base_link" />
-    <origin xyz="1.5 0.0 0.0" rpy="0.0 0.0 0.0" />  <!-- This yaw value is just temporary for lab.  Revert to 0.0 afterward. -->
+    <origin xyz="1.5 0.0 0.0" rpy="0.0 0.0 ${pi}" />
   </joint>
   
   <xacro:if value="$(arg is_using_nailer)">
