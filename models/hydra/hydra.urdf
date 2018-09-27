@@ -307,13 +307,13 @@
     <visual>
       <origin rpy="0 0 3.14159265359" xyz="0 0 .15"/>
       <geometry>
-        <box size=".05 .01 .07"/>
+        <box size=".10 .01 .07"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0 0 .15"/>
       <geometry>
-        <box size=".05 .01 .07"/>
+        <box size=".10 .01 .07"/>
       </geometry>
     </collision>
     <inertial>
@@ -325,13 +325,13 @@
     <visual>
       <origin rpy="0 0 3.14159265359" xyz="0 0 .15"/>
       <geometry>
-        <box size=".05 .01 .07"/>
+        <box size=".10 .01 .07"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="0 0 3.14159265359" xyz="0 0 .15"/>
       <geometry>
-        <box size=".05 .01 .07"/>
+        <box size=".10 .01 .07"/>
       </geometry>
     </collision>
     <inertial>
@@ -339,6 +339,29 @@
       <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02"/>
     </inertial>
   </link>
+  <link name="fake_block">
+    <!--
+	<visual>
+	  <geometry>
+	    <box size=".14 .01 .07" />
+	  </geometry>
+	  </visual>
+	  -->
+    <collision>
+      <geometry>
+        <box size=".14 .01 .07"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02"/>
+    </inertial>
+  </link>
+  <joint name="fake_block_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.005 .452"/>
+    <parent link="side_d"/>
+    <child link="fake_block"/>
+  </joint>
   <!-- Prismatic joint -->
   <joint name="gripper_joint_p" type="prismatic">
     <origin rpy="0 0 0" xyz="0 0.038 0"/>
@@ -746,12 +769,14 @@
         <mesh filename="package://hydra/models/ee_and_nailer/meshes/nailer.stl" scale="0.0254 0.0254 0.0254"/>
       </geometry>
     </visual>
+    <!--
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://hydra/models/ee_and_nailer/meshes/nailer.stl" scale="0.0254 0.0254 0.0254"/>
+	<mesh filename="${nailer_stl_path}" scale="${stl_scale} ${stl_scale} ${stl_scale}" />
       </geometry>
     </collision>
+    -->
     <inertial>
       <mass value="0.1"/>
       <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.02" iyz="0.0" izz="0.02"/>
@@ -823,7 +848,7 @@
     </sensor>
   </gazebo>
   <joint name="camera_rgb_joint" type="fixed">
-    <origin rpy="0 -1.5708 0" xyz="-0.12 0 0.08"/>
+    <origin rpy="0 -1.5708 0" xyz="-0.075 0 0.08"/>
     <parent link="attacher_tool0"/>
     <child link="camera_rgb_frame"/>
   </joint>
